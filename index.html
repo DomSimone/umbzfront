@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umbuzo - African Intelligence Assistant</title>
+    <link rel="icon" type="image/png" href="Mbuzo.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Voice Assistant Styles */
+        .btn-mic {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        .btn-mic:hover {
+            color: var(--text-primary);
+            background-color: var(--hover);
+        }
+        .btn-mic.recording {
+            color: #f44336;
+            background-color: rgba(244, 67, 54, 0.1);
+            animation: pulse-record 1.5s infinite;
+        }
+        @keyframes pulse-record {
+            0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo-link">
+                    <img src="Mbuzo.png" alt="Umbuzo Logo" class="nav-logo">
+                    <span class="nav-brand">Umbuzo</span>
+                </a>
+                <div class="docker-status">
+                    <div class="docker-indicator" id="dockerIndicator"></div>
+                    <span id="dockerStatusText">Checking System...</span>
+                </div>
+            </div>
+            <div class="nav-center">
+                <a href="index.html" class="nav-link active">Chat</a>
+                <a href="history.html" class="nav-link">History</a>
+                <a href="apps.html" class="nav-link">Apps</a>
+                <a href="monitor.html" class="nav-link">Monitor</a>
+                <a href="http://127.0.0.1:8001/docs" class="nav-link" target="_blank">API Docs</a>
+            </div>
+            <div class="nav-right">
+                <button class="btn-signin" onclick="window.location.href='signin.html'">Sign In</button>
+                <button class="btn-signup" onclick="window.location.href='signup.html'">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Connection Status Indicator (Hidden by default) -->
+    <div class="connection-status" id="connectionStatus" style="display: none;">
+        <span id="connectionStatusText">Connecting to backend...</span>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="container-info">
+            <div class="model-info">
+                <span>🧠 Umbuzo Model</span>
+                <span class="model-tag">GGUF</span>
+            </div>
+            <div class="performance-metrics">
+                <div class="metric-item">
+                    <span class="metric-label">Model</span>
+                    <span class="metric-value">1.1B</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Type</span>
+                    <span class="metric-value">Chat</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Format</span>
+                    <span class="metric-value">F16</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="docker-actions">
+            <button class="btn-docker-action primary" id="btnCheckHealth" style="width: 100%;">
+                <span id="startStopIcon">🔄</span>
+                <span id="startStopText">Reconnect / Check Health</span>
+            </button>
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-action" onclick="quickAction('history')">📜 History</button>
+            <button class="quick-action" onclick="quickAction('economics')">💰 Economics</button>
+            <button class="quick-action" onclick="quickAction('politics')">🗳️ Politics</button>
+            <button class="quick-action" onclick="quickAction('culture')">🎭 Culture</button>
+        </div>
+
+        <button class="btn-new-chat" id="btnNewChat">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>New Chat</span>
+        </button>
+
+        <div class="chat-history-section">
+            <h3 class="sidebar-title">Recent Chats</h3>
+            <div class="chat-history-list" id="chatHistoryList">
+                <!-- Dynamically populated by app.js -->
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="monitor.html" class="sidebar-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 12h4l2 4 4-8 4 6h4"></path>
+                </svg>
+                <span>System Monitor</span>
+            </a>
+            <a href="apps.html" class="sidebar-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Apps & Tools</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="main-content">
+        <div class="chat-container" id="chatContainer">
+            <!-- Welcome Message -->
+            <div class="welcome-section" id="welcomeSection">
+                <div class="welcome-logo">
+                    <img src="Mbuzo.png" alt="Umbuzo Logo" class="main-logo">
+                </div>
+                <h1 class="welcome-title">Umbuzo</h1>
+                <p class="welcome-subtitle">African History, News, and Academic Intelligence</p>
+
+                <div class="capabilities-list">
+                    <div class="capability-item">
+                        <span class="capability-icon">🗳️</span>
+                        <span>Political & Civic</span>
+                    </div>
+                    <div class="capability-item">
+                        <span class="capability-icon">📈</span>
+                        <span>Economic Trends</span>
+                    </div>
+                    <div class="capability-item">
+                        <span class="capability-icon">🏙️</span>
+                        <span>Urban Dynamics</span>
+                    </div>
+                    <div class="capability-item">
+                        <span class="capability-icon">👥</span>
+                        <span>Demographics</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="messages-container" id="messagesContainer" style="display: none;">
+                <!-- Messages will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-container">
+            <div class="input-wrapper">
+                <button class="btn-attach" id="btnAttach" title="Attach file" onclick="alert('File attachment coming soon!')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                    </svg>
+                </button>
+
+                <input
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Ask Umbuzo anything..."
+                    autocomplete="off"
+                >
+
+                <div class="model-selector-wrapper">
+                    <select class="model-selector" id="modelSelector">
+                        <option value="default">General Inquiry</option>
+                        <option value="politics">Political & Civic</option>
+                        <option value="economics">Economic & Labor</option>
+                        <option value="urban">Urban & Community</option>
+                        <option value="demographics">Demographics</option>
+                    </select>
+                </div>
+
+                <button class="btn-mic" id="btnMic" title="Use Voice">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                    </svg>
+                </button>
+
+                <button class="btn-send" id="btnSend" title="Send message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Umbuzo is thinking...</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
