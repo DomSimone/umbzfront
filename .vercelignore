@@ -1,0 +1,6 @@
+# Ignore all files and directories in the root
+*
+
+# But, re-include the 'frontend' directory and the vercel.json file, which are needed for the deployment.
+!frontend/
+!vercel.json
