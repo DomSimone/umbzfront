@@ -1,0 +1,40 @@
+# Python dependencies for Umbuzo AI Backend
+
+# Web Framework
+FastAPI==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# PDF Processing
+PyMuPDF==1.23.2
+pdfplumber==0.10.2
+
+# AI/ML Dependencies
+llama-cpp-python>=0.2.20 # Updated to a version that supports from_pretrained
+langchain-community==0.0.19
+torch==2.1.0
+torchaudio==2.1.0
+transformers==4.35.2
+huggingface-hub
+
+# Voice Assistant
+SpeechRecognition==3.8.1
+gTTS==2.5.1
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+
+# Performance
+gunicorn==21.2.0
+
+# Schema/Validation
+pydantic==2.3.0
+
+# Additional dependencies for audio processing
+pydub==0.25.1
+numpy==1.24.4
+
+# Development dependencies (optional)
+pytest==7.4.3
+black==23.11.0
